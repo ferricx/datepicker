@@ -1,0 +1,43 @@
+<template id="datepicker-template">
+
+  <div id="myDatepicker" class="datepicker">
+    <div class="date">
+      <label for="id-textbox-1"><span class="label-text">Date</span><span class="note" id="id-description-1">(<span
+            class="sr-only">date format: </span>mm/dd/yyyy)</span></label>
+      <div class="group">
+        <input type="text" placeholder="mm/dd/yyyy" id="id-textbox-1" aria-describedby="id-description-1"
+          name=`${input-name}`>
+        <button type="button" class="icon datepicker-trigger" aria-label="Choose Date"></button>
+      </div>
+    </div>
+    <dialog id="id-datepicker-1" class="datepicker-dialog" aria-label="Choose Date">
+      <div class="dlog-content">
+        <header class="header">
+          <button type="button" class="prev-year" aria-label="previous year"></button>
+          <button type="button" class="prev-month" aria-label="previous month"></button>
+
+          <h2 id="id-grid-label" class="month-year" aria-live="polite"><select class="month-select"></select><select
+              class="year-select"></select></h2>
+
+          <button type="button" class="next-month" aria-label="next month"></button>
+          <button type="button" class="next-year" aria-label="next year"></button>
+        </header>
+
+        <div class="dates table" role="grid" aria-labelledby="id-grid-label">
+          <div class="table__head" role="header">
+            <div class="table__head__cell" role="header-item">
+            </div>
+          </div>
+          <div class="table__body"></div>
+        </div>
+      </div>
+
+      <menu class="dialog-ok-cancel-toolbar">
+        <button class="dialog-button" value="cancel">Cancel</button>
+        <button class="dialog-button" value="ok">OK</button>
+      </menu>
+
+      <div class="dialog-message" aria-live="polite"></div>
+    </dialog>
+  </div>
+</template>
