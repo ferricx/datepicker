@@ -63,9 +63,14 @@ class DatepickerDialog extends HTMLElement {
       'button[value="cancel"]'
     );
     
-    this.tbodyNode = this.dialogNode.querySelector('.table.dates .table__body');
+this.tbodyNodePrevMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
+ this.tbodyNodePrevYearMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
+
+    this.tbodyNode = this.dialogNode.querySelector('.table.dates.current-month-grid .table__body');
     this.theadNode = this.dialogNode.querySelector('.table.dates .table__head');
-    
+
+    this.tbodyNodeNextYearMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
+    this.tbodyNodeNextMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
     this.lastRowNode = null;
   
     this.days = [];
@@ -123,7 +128,7 @@ setInputName(name){
 
     this.tbodyNode.innerHTML = '';
     
-       const indicator = document.createElement("div");
+    const indicator = document.createElement("div");
     indicator.classList.add("focus-indicator");
     this.tbodyNode.appendChild(indicator);
     // for (let i = 0; i < 6; i++) {

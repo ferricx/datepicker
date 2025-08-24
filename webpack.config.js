@@ -4,7 +4,7 @@ module.exports = {
   mode: 'development',
   entry: path.resolve(__dirname, 'src/controller/dp-controller.js'),
   output: {
-    filename: 'dpapp.bundle.js', 
+    filename: 'datepicker-web-component.bundle.js', 
     path: path.resolve(__dirname, 'dist'),
   },
   module: {
