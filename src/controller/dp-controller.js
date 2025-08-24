@@ -170,7 +170,7 @@ setInputName(name){
   }
 
   async gettemplate(){
-    const tmplt = await fetch("/node_modules/datepicker-web-component/src/template/dp-template.html");
+    const tmplt = await fetch("/node_modules/@ferricx/datepicker-web-component/src/template/dp-template.html");
     const tmplHtml = await tmplt.text();
           const parser = new DOMParser();
     const doc = parser.parseFromString(tmplHtml, 'text/html');
