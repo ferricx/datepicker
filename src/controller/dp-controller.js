@@ -1,44 +1,44 @@
 import "../style/style.scss";
 
 class DatepickerDialog extends HTMLElement {
-  static get observedAttributes(){
+  static get observedAttributes() {
     return ['input-name', 'input-class-string', 'label-string', 'required', 'min-date', 'max-date']
   }
-  
+
   constructor() {
     super();
   }
 
-  connectedCallback(){
+  connectedCallback() {
     this.init();
   }
 
-  async init(){
+  async init() {
     // this.attachShadow({mode: 'open'});
     await this.gettemplate();
     const dlogTemplate = document.getElementById('datepicker-template');
     this.appendChild(dlogTemplate.content.cloneNode(true));
- 
+
     this.buttonLabelChoose = 'Choose Date';
     this.buttonLabelChange = 'Change Date';
     this.dayLabels = [];
     this.dayLabelsShort = [];
     this.monthLabels = [];
-    
+
     const daysLongFormatter = new Intl.DateTimeFormat('en-us', { weekday: 'long' });
-    const daysShortFormatter = new Intl.DateTimeFormat('en-us', {weekday: 'short'});
-    const monthsLongFormatter = new Intl.DateTimeFormat('en-us', {month: 'long'});
-    
+    const daysShortFormatter = new Intl.DateTimeFormat('en-us', { weekday: 'short' });
+    const monthsLongFormatter = new Intl.DateTimeFormat('en-us', { month: 'long' });
+
     for (let i = 0; i < 7; i++) {
-       const date = new Date(2023, 0, 1 + i); // 1 + i ensures we get Sunday, Monday...
-        this.dayLabels.push(daysLongFormatter.format(date));
-        this.dayLabelsShort.push(daysShortFormatter.format(date));
+      const date = new Date(2023, 0, 1 + i); // 1 + i ensures we get Sunday, Monday...
+      this.dayLabels.push(daysLongFormatter.format(date));
+      this.dayLabelsShort.push(daysShortFormatter.format(date));
     }
-      for (let i = 1; i < 360; i += 32) {
-       const date = new Date(2023, 0, 1 + i); // 1 + i ensures we get Sunday, Monday...
-        this.monthLabels.push(monthsLongFormatter.format(date));
+    for (let i = 1; i < 360; i += 32) {
+      const date = new Date(2023, 0, 1 + i); // 1 + i ensures we get Sunday, Monday...
+      this.monthLabels.push(monthsLongFormatter.format(date));
     }
-    
+
     this.messageCursorKeys = 'Cursor keys can navigate dates';
     this.lastMessage = '';
 
@@ -62,9 +62,9 @@ class DatepickerDialog extends HTMLElement {
     this.cancelButtonNode = this.dialogNode.querySelector(
       'button[value="cancel"]'
     );
-    
-this.tbodyNodePrevMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
- this.tbodyNodePrevYearMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
+
+    this.tbodyNodePrevMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
+    this.tbodyNodePrevYearMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
 
     this.tbodyNode = this.dialogNode.querySelector('.table.dates.current-month-grid .table__body');
     this.theadNode = this.dialogNode.querySelector('.table.dates .table__head');
@@ -72,7 +72,7 @@ this.tbodyNodePrevMonth = this.dialogNode.querySelector('.table.dates.prev-month
     this.tbodyNodeNextYearMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
     this.tbodyNodeNextMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
     this.lastRowNode = null;
-  
+
     this.days = [];
 
     this.focusDay = new Date();
@@ -82,57 +82,94 @@ this.tbodyNodePrevMonth = this.dialogNode.querySelector('.table.dates.prev-month
     this.lastDate = -1;
 
     this.isMouseDownOnBackground = false;
-    
-    
+
+
     this.theadNode.innerHTML = '';
 
     this.createMonthGrid();
   }
 
-  attributeChangedCallback(name, oldValue, newValue){
+  attributeChangedCallback(name, oldValue, newValue) {
     console.log("name - " + name, "nv - " + newValue);
-    switch (name){
+    switch (name) {
       case 'input-name':
-      this.inputName = newValue;
-      break; 
+        this.inputName = newValue;
+        break;
     }
   }
 
-setInputNode(){
-  console.log("set input name");
-  this.textboxNode = this.querySelector("input[type=text]");
-}
+  setInputNode() {
+    console.log("set input name");
+    this.textboxNode = this.querySelector("input[type=text]");
+  }
 
-getTextboxNode(){return this.querySelector("input[type=text]");}
-getTextboxLabelNode(){return this.querySelector("label");}
+  getTextboxNode() { return this.querySelector("input[type=text]"); }
+  getTextboxLabelNode() { return this.querySelector("label"); }
 
-setInputName(name){
-  this.textboxNode.id=this.inputName;
-  this.textboxNode.name=this.inputName;
-  
-  this.inputLabelNode.setAttribute("for", this.inputName);
-}
+  setInputName(name) {
+    this.textboxNode.id = this.inputName;
+    this.textboxNode.name = this.inputName;
 
-  createMonthGrid(){
+    this.inputLabelNode.setAttribute("for", this.inputName);
+  }
+
+  createMonthGrid() {
     console.log("createmonthgrid");
-    // const row = this.theadNode.insertRow();
-    for (let i = 0; i<7; i++){
+    //day of week heading
+    for (let i = 0; i < 7; i++) {
       const cell = document.createElement('div');
       cell.classList.add("table__head__cell");
       cell.innerText = this.dayLabelsShort[i];
-      
+
       this.theadNode.appendChild(cell);
     }
-    
+
     // Create Grid of Dates
 
     this.tbodyNode.innerHTML = '';
-    
+
     const indicator = document.createElement("div");
     indicator.classList.add("focus-indicator");
     this.tbodyNode.appendChild(indicator);
-    // for (let i = 0; i < 6; i++) {
-      // this.lastRowNode = row;
+
+    this.buildGrids();
+
+    this.setDropdowns();
+    this.updateGrid();
+    this.close(false);
+    this.setDateForButtonLabel();
+    this.addEventListeners();
+  }
+
+  set targetElement(element) {
+    if (element instanceof HTMLElement) {
+      this._targetElement = element;
+      // this.shadowRoot.innerHTML = `<p>Target element's ID: ${element.id}</p>`;
+      // You can now use this._targetElement within your component
+    } else {
+      console.warn("Invalid element provided to targetElement property.");
+    }
+  }
+
+  get targetElement() {
+    return this._targetElement;
+  }
+
+  async gettemplate() {
+    const tmplt = await fetch("/node_modules/datepicker-web-component/src/template/dp-template.html");
+    const tmplHtml = await tmplt.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(tmplHtml, 'text/html');
+    const template = doc.querySelector("template");
+    document.body.appendChild(template);
+    console.log(document.getElementById("datepicker-template"));
+  }
+
+
+  buildGrids() {
+    const grids = [this.tbodyNodePrevMonth, this.tbodyNodePrevYearMonth, this.tbodyNode, this.tbodyNodeNextYearMonth, this.tbodyNodeNextMonth];
+    for (const grid of grids) {
+
       for (let j = 0; j < 42; j++) {
         const cell = document.createElement('div');
         cell.classList.add("grid-cell");
@@ -143,64 +180,38 @@ setInputName(name){
         cell.addEventListener('focus', this.handleDayFocus.bind(this));
 
         cell.textContent = '-1';
-
-        this.tbodyNode.appendChild(cell);
-        this.days.push(cell);
+        grid.appendChild(cell);
+        if (grid === this.tbodyNode) {
+          this.days.push(cell);
+        }
       }
-    
-    this.setDropdowns();
-    this.updateGrid();
-    this.close(false);
-    this.setDateForButtonLabel();
-    this.addEventListeners();
-  }
-    
-  set targetElement(element) {
-    if (element instanceof HTMLElement) {
-      this._targetElement = element;
-      // this.shadowRoot.innerHTML = `<p>Target element's ID: ${element.id}</p>`;
-      // You can now use this._targetElement within your component
-    } else {
-      console.warn("Invalid element provided to targetElement property.");
     }
   }
-  
-   get targetElement() {
-    return this._targetElement;
-  }
 
-  async gettemplate(){
-    const tmplt = await fetch("/node_modules/datepicker-web-component/src/template/dp-template.html");
-    const tmplHtml = await tmplt.text();
-          const parser = new DOMParser();
-    const doc = parser.parseFromString(tmplHtml, 'text/html');
-    const template = doc.querySelector("template");
-    document.body.appendChild(template);
-
-    console.log(document.getElementById("datepicker-template"));
+  setDropdowns() {
 
   }
 
-  setDropdowns(){
-    
-  }
-  
-  addEventListeners(){
+  addEventListeners() {
     console.log(this.dialogNode);
     this.dialogNode.addEventListener("beforetoggle", (e) => {
       console.log("beforeToggle", e.newState);
-          const datepickerOpen = new CustomEvent('datepickerToggle', 
-       {
-        composed: true,
-        detail: {
-          status: e.newState
-        }
-      });
+      const datepickerOpen = new CustomEvent('datepickerToggle',
+        {
+          composed: true,
+          detail: {
+            status: e.newState
+          }
+        });
       this.dispatchEvent(datepickerOpen);
     });
     this.textboxNode.addEventListener(
       'blur',
       this.setDateForButtonLabel.bind(this)
+    );
+    this.textboxNode.addEventListener(
+      'keydown',
+      this.handleInputKeydown(),
     );
 
     this.buttonNode.addEventListener(
@@ -235,7 +246,7 @@ setInputName(name){
       'click',
       this.handleNextMonthButton.bind(this)
     );
-    
+
     this.prevYearNode.addEventListener(
       'click',
       this.handlePreviousYearButton.bind(this)
@@ -268,7 +279,7 @@ setInputName(name){
       true
     );
   }
-  
+
   isSameDay(day1, day2) {
     return (
       day1.getFullYear() == day2.getFullYear() &&
@@ -306,15 +317,6 @@ setInputName(name){
         this.isSameDay(d, this.selectedDay)
       );
       d.setDate(d.getDate() + 1);
-
-      // Hide last row if all dates are disabled (e.g. in next month)
-      if (i === 35) {
-        if (flag) {
-      //    this.lastRowNode.style.visibility = 'hidden';
-        } else {
-        //  this.lastRowNode.style.visibility = 'visible';
-        }
-      }
     }
   }
 
@@ -347,7 +349,7 @@ setInputName(name){
       }
     }
   }
-  
+
   moveFocusToDay(day) {
     const d = this.focusDay;
     this.oldDay = this.focusDay;
@@ -370,13 +372,13 @@ setInputName(name){
     for (let i = 0; i < this.days.length; i++) {
       const dayNode = this.days[i];
       const day = this.getDayFromDataDateAttribute(dayNode);
-      
-      if(!this.isSameDay(day, this.oldDay)){
+
+      if (!this.isSameDay(day, this.oldDay)) {
         dayNode.tabIndex = -1;
       } else {
-        if(!this.isSameDay(this.oldDay, this.focusDay)){
-        oldDayIndex = i;
-      }
+        if (!this.isSameDay(this.oldDay, this.focusDay)) {
+          oldDayIndex = i;
+        }
       }
       if (this.isSameDay(day, this.focusDay)) {
         dayNode.tabIndex = 0;
@@ -385,24 +387,24 @@ setInputName(name){
         }
       }
     }
- 
-    if(oldDayIndex){
-      this.days[oldDayIndex].tabIndex=-1;
+
+    if (oldDayIndex) {
+      this.days[oldDayIndex].tabIndex = -1;
     }
   }
 
   open() {
     console.log("open dpdl");
-        const datepickerOpen = new CustomEvent('datepickerToggle', 
-       {
+    const datepickerOpen = new CustomEvent('datepickerToggle',
+      {
         composed: true,
         detail: {
           status: "open"
         }
       });
-                                            
-      this.dispatchEvent(datepickerOpen);
-    
+
+    this.dispatchEvent(datepickerOpen);
+
     this.dialogNode.showModal();
     this.getDateFromTextbox();
     this.updateGrid();
@@ -417,8 +419,8 @@ setInputName(name){
     this.dialogNode.close(flag);
     if (typeof flag !== 'boolean') {
       // Default is to move focus to combobox
-         this.buttonNode.focus();
-      
+      this.buttonNode.focus();
+
     }
     this.setMessage('');
   }
@@ -608,6 +610,13 @@ setInputName(name){
   }
 
   // Event handlers
+
+  handleInputKeydown(e){
+    if(e.altKey && e.key === "ArrowDown"){
+      this.open();
+    }
+  }
+
   handleOkButton(event) {
     let flag = false;
 
@@ -663,7 +672,7 @@ setInputName(name){
           case 'Enter':
             this.moveToNextYear();
             this.setFocusDay(false);
-            flag=true;
+            flag = true;
             break;
         }
         break;
@@ -671,13 +680,13 @@ setInputName(name){
       case 'click':
         this.moveToNextYear();
         this.setFocusDay(false);
-        flag=true;
+        flag = true;
         break;
 
       default:
         break;
     }
-    if(flag){
+    if (flag) {
       event.stopPropagation();
       event.preventDefault();
     }
@@ -711,9 +720,9 @@ setInputName(name){
 
       case 'click':
         this.moveToPreviousYear();
-        
+
         this.setFocusDay(false);
-        flag=true;
+        flag = true;
         break;
 
       default:
@@ -790,13 +799,15 @@ setInputName(name){
 
   handleDayKeyDown(event) {
     let flag = false;
-    
+
     switch (event.code) {
       case 'Tab':
-        this.cancelButtonNode.focus();
         if (event.shiftKey) {
           this.nextYearNode.focus();
+        } else {
+          this.cancelButtonNode.focus();
         }
+
         this.setMessage('');
         flag = true;
         break;
@@ -855,8 +866,8 @@ setInputName(name){
         flag = true;
         break;
       case 'Space':
-        case 'Enter':
-        
+      case 'Enter':
+
         this.handleDayClick(event);
         this.setTextboxDate(event.currentTarget);
         flag = true;
@@ -874,7 +885,7 @@ setInputName(name){
       this.setTextboxDate(event.currentTarget);
       this.close();
     }
-    
+
     event.stopPropagation();
     event.preventDefault();
   }
@@ -906,63 +917,63 @@ setInputName(name){
   }
 
   handleBackgroundMouseUp(event) {
-      if (event.target === this.dialogNode && this.isOpen()) {
-        this.close(false);
-        event.stopPropagation();
-        event.preventDefault();
-      }
+    if (event.target === this.dialogNode && this.isOpen()) {
+      this.close(false);
+      event.stopPropagation();
+      event.preventDefault();
+    }
   }
 }
 
 
-export {DatepickerDialog};
+export { DatepickerDialog };
 
 customElements.define('dlog-datepicker', DatepickerDialog);
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log("dlog-datepicker check");
 
-// fetch('https://codepen.io/ferricx/pen/yyYgrXz.html')
-//   .then(response => {
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-//   // const dp = new Do
-//   const htmlText = response.text();
-//     return htmlText;
-//   })
-//   .then(html => {
-// // console.log(html);
-//   // const htmlElement = (new DOMParser()).parseFromString(html, "text/html");
-  
-//   const ele = document.getElementById('datepicker-template');
-  
-//   if(!ele){
-//     console.error("no dlog-template element found. Add this to your code to use this component.");
-//   } else {
-//   ele.innerHTML = html;
+  // fetch('https://codepen.io/ferricx/pen/yyYgrXz.html')
+  //   .then(response => {
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //   // const dp = new Do
+  //   const htmlText = response.text();
+  //     return htmlText;
+  //   })
+  //   .then(html => {
+  // // console.log(html);
+  //   // const htmlElement = (new DOMParser()).parseFromString(html, "text/html");
 
-//   customElements.define('dlog-datepicker', DatePickerDialog);
-    
-//   }
-//   })
-//   .catch(e => {
-//     console.error('There was a problem with the fetch operation:', e);
-//   });
+  //   const ele = document.getElementById('datepicker-template');
+
+  //   if(!ele){
+  //     console.error("no dlog-template element found. Add this to your code to use this component.");
+  //   } else {
+  //   ele.innerHTML = html;
+
+  //   customElements.define('dlog-datepicker', DatePickerDialog);
+
+  //   }
+  //   })
+  //   .catch(e => {
+  //     console.error('There was a problem with the fetch operation:', e);
+  //   });
 
   const dialogDatepicker = document.querySelector('dlog-datepicker');
 
-  if(dialogDatepicker) {
-//       const shadowRoot = dialogDatepicker.shadowRoot;
-//       const dlogElement = shadowRoot.querySelector('dialog');
-      dialogDatepicker.addEventListener("datepickerToggle", e =>{
-        console.log(e.detail.status);
-        if(e.detail.status === "open"){
+  if (dialogDatepicker) {
+    //       const shadowRoot = dialogDatepicker.shadowRoot;
+    //       const dlogElement = shadowRoot.querySelector('dialog');
+    dialogDatepicker.addEventListener("datepickerToggle", e => {
+      console.log(e.detail.status);
+      if (e.detail.status === "open") {
         document.body.classList.add("dialog-open");
-          console.log(document.body);
-        } else {
-          document.body.classList.remove("dialog-open");
-        }
+        console.log(document.body);
+      } else {
+        document.body.classList.remove("dialog-open");
+      }
     });
   }
 });
