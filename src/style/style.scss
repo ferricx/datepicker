@@ -301,6 +301,7 @@ body {
         grid-template-columns: repeat(7, 1fr);
         grid-template-rows: min-content repeat(6, 1fr);
         gap: 0.1875rem;
+        display: none;
 
         .table__head {
             display: grid;
@@ -404,6 +405,9 @@ body {
             // background-color: var(--dpd__day-item-bg-color--focusable, #1976D2);
                 color: var(--dpd__day-item-text-color--focusable, #fff);
 
+            }
+            &.current-month-grid{
+              display: grid;
             }
         }
     }
