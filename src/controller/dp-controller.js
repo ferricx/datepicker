@@ -211,7 +211,7 @@ class DatepickerDialog extends HTMLElement {
     );
     this.textboxNode.addEventListener(
       'keydown',
-      this.handleInputKeydown(this),
+      this.handleInputKeydown.bind(this),
     );
 
     this.buttonNode.addEventListener(
