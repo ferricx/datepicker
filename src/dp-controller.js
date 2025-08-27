@@ -13,9 +13,10 @@ class DatepickerDialog extends HTMLElement {
     this.init();
   }
 
-  async init() {
+  init() {
     // this.attachShadow({mode: 'open'});
     this.gettemplate().then(()=>{
+      console.log("getTemplate.then");
       const dlogTemplate = document.getElementById('datepicker-template');
     this.appendChild(dlogTemplate.content.cloneNode(true));
 
