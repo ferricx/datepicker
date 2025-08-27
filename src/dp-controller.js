@@ -15,32 +15,9 @@ class DatepickerDialog extends HTMLElement {
 
   async init() {
     // this.attachShadow({mode: 'open'});
-    await this.gettemplate();
-    const dlogTemplate = document.getElementById('datepicker-template');
+    this.gettemplate().then(()=>{
+      const dlogTemplate = document.getElementById('datepicker-template');
     this.appendChild(dlogTemplate.content.cloneNode(true));
-
-    this.buttonLabelChoose = 'Choose Date';
-    this.buttonLabelChange = 'Change Date';
-    this.dayLabels = [];
-    this.dayLabelsShort = [];
-    this.monthLabels = [];
-
-    const daysLongFormatter = new Intl.DateTimeFormat('en-us', { weekday: 'long' });
-    const daysShortFormatter = new Intl.DateTimeFormat('en-us', { weekday: 'short' });
-    const monthsLongFormatter = new Intl.DateTimeFormat('en-us', { month: 'long' });
-
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(2023, 0, 1 + i); // 1 + i ensures we get Sunday, Monday...
-      this.dayLabels.push(daysLongFormatter.format(date));
-      this.dayLabelsShort.push(daysShortFormatter.format(date));
-    }
-    for (let i = 1; i < 360; i += 32) {
-      const date = new Date(2023, 0, 1 + i); // 1 + i ensures we get Sunday, Monday...
-      this.monthLabels.push(monthsLongFormatter.format(date));
-    }
-
-    this.messageCursorKeys = 'Cursor keys can navigate dates';
-    this.lastMessage = '';
 
     console.log("set the nodes");
     this.inputLabelNode = this.querySelector("label");
@@ -71,6 +48,36 @@ class DatepickerDialog extends HTMLElement {
 
     this.tbodyNodeNextYearMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
     this.tbodyNodeNextMonth = this.dialogNode.querySelector('.table.dates.prev-month-grid .table__body');
+
+       this.theadNode.innerHTML = '';
+
+    this.createMonthGrid();
+
+    });
+    this.buttonLabelChoose = 'Choose Date';
+    this.buttonLabelChange = 'Change Date';
+    this.dayLabels = [];
+    this.dayLabelsShort = [];
+    this.monthLabels = [];
+
+    const daysLongFormatter = new Intl.DateTimeFormat('en-us', { weekday: 'long' });
+    const daysShortFormatter = new Intl.DateTimeFormat('en-us', { weekday: 'short' });
+    const monthsLongFormatter = new Intl.DateTimeFormat('en-us', { month: 'long' });
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(2023, 0, 1 + i); // 1 + i ensures we get Sunday, Monday...
+      this.dayLabels.push(daysLongFormatter.format(date));
+      this.dayLabelsShort.push(daysShortFormatter.format(date));
+    }
+    for (let i = 1; i < 360; i += 32) {
+      const date = new Date(2023, 0, 1 + i); // 1 + i ensures we get Sunday, Monday...
+      this.monthLabels.push(monthsLongFormatter.format(date));
+    }
+
+    this.messageCursorKeys = 'Cursor keys can navigate dates';
+    this.lastMessage = '';
+
+    
     this.lastRowNode = null;
 
     this.days = [];
@@ -84,9 +91,7 @@ class DatepickerDialog extends HTMLElement {
     this.isMouseDownOnBackground = false;
 
 
-    this.theadNode.innerHTML = '';
-
-    this.createMonthGrid();
+ 
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
