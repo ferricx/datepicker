@@ -11,17 +11,18 @@
       </div>
     </div>
     <dialog id="id-datepicker-1" class="datepicker-dialog" aria-label="Choose Date">
-      <div class="dlog-content">
-        <header class="header">
-          <button type="button" class="prev-year" aria-label="previous year"></button>
-          <button type="button" class="prev-month" aria-label="previous month"></button>
 
-          <h2 id="id-grid-label" class="month-year" aria-live="polite"><select class="month-select"></select><select
-              class="year-select"></select></h2>
+      <header class="header">
+        <button type="button" class="prev-year" aria-label="previous year"></button>
+        <button type="button" class="prev-month" aria-label="previous month"></button>
 
-          <button type="button" class="next-month" aria-label="next month"></button>
-          <button type="button" class="next-year" aria-label="next year"></button>
-        </header>
+        <h2 id="id-grid-label" class="month-year" aria-live="polite"><select class="month-select"></select><select
+            class="year-select"></select></h2>
+
+        <button type="button" class="next-month" aria-label="next month"></button>
+        <button type="button" class="next-year" aria-label="next year"></button>
+      </header>
+      <div class="body">
         <div class="dates table prev-month-grid" role="grid" aria-labelledby="id-grid-label">
           <div class="table__head" role="header">
             <div class="table__head__cell" role="header-item">
@@ -29,6 +30,7 @@
           </div>
           <div class="table__body"></div>
         </div>
+
         <div class="dates table prev-year-month-grid">
           <div class="table__head" role="header">
             <div class="table__head__cell" role="header-item">
@@ -36,6 +38,7 @@
           </div>
           <div class="table__body"></div>
         </div>
+
         <div class="dates table current-month-grid" role="grid" aria-labelledby="id-grid-label">
           <div class="table__head" role="header">
             <div class="table__head__cell" role="header-item">
@@ -43,6 +46,7 @@
           </div>
           <div class="table__body"></div>
         </div>
+
         <div class="dates table next-year-month-grid">
           <div class="table__head" role="header">
             <div class="table__head__cell" role="header-item">
@@ -50,21 +54,23 @@
           </div>
           <div class="table__body"></div>
         </div>
-      </div>
-      <div class="dates table next-month-grid">
-        <div class="table__head" role="header">
-          <div class="table__head__cell" role="header-item">
-          </div>
-        </div>
-        <div class="table__body"></div>
-      </div>
-  </div>
-  <menu class="dialog-ok-cancel-toolbar">
-    <button class="dialog-button" value="cancel">Cancel</button>
-    <button class="dialog-button" value="ok">OK</button>
-  </menu>
 
-  <div class="dialog-message" aria-live="polite"></div>
-  </dialog>
+        <div class="dates table next-month-grid">
+          <div class="table__head" role="header">
+            <div class="table__head__cell" role="header-item">
+            </div>
+          </div>
+          <div class="table__body"></div>
+        </div>
+      </div>
+      <div class="footer">
+        <menu class="dialog-ok-cancel-toolbar">
+          <button class="dialog-button" value="cancel">Cancel</button>
+          <button class="dialog-button" value="ok">OK</button>
+        </menu>
+
+        <div class="dialog-message" aria-live="polite"></div>
+      </div>
+    </dialog>
   </div>
 </template>

@@ -156,7 +156,7 @@ class DatepickerDialog extends HTMLElement {
   }
 
   async gettemplate() {
-    const tmplt = await fetch("/node_modules/datepicker-web-component/src/template/dp-template.html");
+    const tmplt = await fetch("./index.html");
     const tmplHtml = await tmplt.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(tmplHtml, 'text/html');
@@ -224,6 +224,7 @@ class DatepickerDialog extends HTMLElement {
     );
 
     this.okButtonNode.addEventListener('click', this.handleOkButton.bind(this));
+
     this.okButtonNode.addEventListener(
       'keydown',
       this.handleOkButton.bind(this)

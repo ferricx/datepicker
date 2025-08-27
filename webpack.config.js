@@ -1,4 +1,5 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -21,8 +22,15 @@ module.exports = {
           'sass-loader', // Compiles Sass to CSS
         ],
       },
+   
       // ... other rules for JavaScript (e.g., Babel for ES Modules)
     ],
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/template/dp-template.html',
+      filename: 'index.html'
+    }),
+  ],
   // ... if using MiniCssExtractPlugin, add it to plugins array
 };

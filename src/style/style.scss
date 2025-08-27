@@ -72,8 +72,6 @@ body {
 
         input {
             grid-area: input;
-
-        // var(--dpi-styles);
         }
 
         button {
@@ -406,10 +404,11 @@ body {
                 color: var(--dpd__day-item-text-color--focusable, #fff);
 
             }
-            &.current-month-grid{
+            
+        }
+        &.current-month-grid{
               display: grid;
             }
-        }
     }
 
     .dialog-message {
