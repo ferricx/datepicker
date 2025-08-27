@@ -1,0 +1,488 @@
+:root {
+  --component__font-family: "Source Sans 3", sans-serif;
+  --border-radius: 0.25rem;
+  --day-text-color: #fff;
+  --component-font-size: 0.75rem;
+}
+
+@mixin wrapper-names($day-num) {
+  @for $j from 1 through $day-num {
+    &:is(:has(> .grid-cell[tabindex="0"]:nth-child(#{$j + 2}))) {
+      .focus-indicator {
+        --from: --anchor-#{$j};
+        &:before {
+          animation: 1.5s ease 0s stretchme;
+        }
+      }
+    }
+  }
+}
+
+.sr-only {
+  position: absolute;
+  top: -2000em;
+  left: -3000em;
+}
+
+body {
+  .scroll-cont {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50rem;
+  }
+}
+
+.datepicker-dialog {
+  .table.dates {
+    .table__body {
+      @include wrapper-names(35);
+      .focus-indicator {
+        --for: var(--from);
+      }
+    }
+  }
+}
+
+
+/* ************************************ */
+
+
+:host {
+    width: 100%;
+
+    * {
+        box-sizing: border-box;
+    }
+}
+
+.datepicker {
+    margin-top: 1em;
+
+    label {
+        display: flex;
+    }
+
+    .group {
+        display: grid;
+        grid-template-areas: "input";
+        gap: var(--dpi-group-gap, 0.25rem);
+
+        input {
+            grid-area: input;
+        }
+
+        button {
+            border: var(--dpi__button-border, 2px solid transparent);
+            display: var(--dpi__button-display, flex);
+            anchor-name: --trigger-btn;
+            color: var(--dpi__button-color, var(--color--blue-700));
+            justify-self: end;
+
+            &.icon {
+                padding: var(--dpi__button-padding, 0.5em);
+                font-size: 1.3125em;
+                padding: 0.5rem;
+                border-color: transparent;
+                background-color: transparent;
+                border-radius: var(--border-radius);
+                grid-area: input;
+                z-index: 1;
+
+                &:after {
+                    content: var(--calendar-icon, "\f073");
+                    font-family: var(--calendar-icon-font, "Font Awesome 6 pro"), sans-serif;
+                }
+
+                &:focus-visible {
+                    background-color: #def;
+                }
+            }
+
+        // var(--dpi__button-styles);
+        }
+    }
+}
+
+.datepicker-dialog {
+    border-width: var(--dpd-border-width, 0.125rem);
+    border-style: var(--dpd-border-style, solid);
+    border-color: var(--dpd-border-color, #1d38bf);
+    margin: var(--dpd-margin, 0.15em 0 0 0);
+    border-radius: var(--dpd--border-radius, 0.25em);
+    background-color: var(--dpd--background-color, #fff);
+    padding: var(--dpd-padding, 0);
+    margin: var(--dpd-margin, 0);
+    font-size: var(--dpd-font-size, 1rem);
+    min-width: var(--dpd-min-width, fit-content);
+    min-height: var(--dpd-min-height, fit-content);
+
+    header {
+        background-color: var(--color--grey-300, #1d38bf);
+        padding: var(--dialog__header-padding, 0.25rem);
+        font-weight: var(--dialog__header-font-weight, 400);
+        text-transform: var(--dialog__header-text-transform, uppercase);
+        color: var(--dialog__header-text-color, white);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 0.125rem;
+    }
+
+    .month-year {
+        font-family: var(--dpd__header__my-font-family, "Cagliostro"), sans-serif;
+        display: inline-block;
+        color: var(--dpd__header__my-header-color, white);
+        text-transform: none;
+        font-weight: var(--dpd__header__my-header-font-weight, 600);
+        text-align: center;
+        flex-grow: 1;
+        margin: 0;
+        min-width: 14ch;
+        font-size: 1rem;
+        padding: 0.25rem;
+    }
+
+    button {
+        border-width: var(--dpc__button__border-width, 2px);
+        border-style: var(--dpc__button__border-style, solid);
+        border-color: var(--dpc__button__border-color, #fff);
+
+        &::-moz-focus-inner {
+            border: 0;
+        }
+
+        &:is(.prev-year,
+        .prev-month,
+        .next-month,
+        .next-year) {
+            display: var(--dpd__header__control-buttons-display, flex);
+            background-color: var(--button__background, darkblue);
+            padding: var(--dpd__header__button-padding, 0.125rem);
+            color: var(--dpd__header__button-text-color, white);
+            border-color: var(--header__button-border-color, transparent);
+            min-width: var(--dpd__header__button-min-width, auto);
+            border-radius: 0.25rem;
+            width: 2rem;
+            height: 2rem;
+            position: relative;
+
+            &:after, &:before {
+                rotate: 0.375turn;
+                transform-origin: center;
+                content: "";
+                position: absolute;
+                height: 37%;
+                width: 37%;
+                align-self: center;
+                justify-self: center;
+                box-shadow: 0.125rem 0.125rem 0 0.0625rem currentColor inset;
+            }
+
+            &:before {
+                left: 33%;
+            }
+
+            /*&:focus,*/
+            /*&:hover {*/
+            /*    border-color: var(--dpd__header__button-border-color--focus, #fff);*/
+            /*}*/
+
+            &:focus {
+                outline-offset: -0.25rem;
+                outline-color: white;
+            }
+        }
+
+        &:is(.prev-year, .prev-month) {
+            &:before, &:after {
+                rotate: 0.875turn;
+            }
+        }
+
+        &:is(.prev-month, .next-month) {
+            &:after {
+                content: unset;
+            }
+        }
+
+        &.prev-year {
+            &:before {
+                left: 25%;
+            }
+
+            &:after {
+                left: 56%;
+            }
+        }
+
+        &.next-year {
+            &:before {
+                left: 6%;
+            }
+
+            &:after {
+                left: 37%;
+            }
+        }
+
+        &.prev-month {
+            &:before {
+                left: 38%;
+            }
+
+            &.next-month {
+                &:before {
+                    left: 20%;
+                }
+            }
+        }
+    }
+
+    .focus-indicator {
+    // z-index: 1;
+        position: absolute;
+        background-color: #0D47A1;
+
+        top: var(--pos-top);
+        right: var(--pos-right);
+        bottom: var(--pos-bottom);
+        left: var(--pos-left);
+
+    // box-sizing: content-box;
+        border-radius: 0.25rem;
+        transition: 0.35s all ease;
+        --pos-top: calc(anchor(var(--for) top));
+        --pos-right: calc(anchor(var(--for) right));
+        --pos-bot: calc(anchor(var(--for) bottom));
+        --pos-left: calc(anchor(var(--for) left));
+    }
+
+    .dialog-ok-cancel-toolbar {
+        display: var(--dpd__ok-cancel-toolbar-display, flex);
+        justify-self: stretch;
+        justify-content: center;
+        padding: 0;
+        margin: 0.5rem;
+        gap: 1rem;
+
+        button {
+            padding: var(--dpd__ok-cancel-toolbar__button-padding, 0.5rem);
+            width: var(--dpd__ok-cancel-toolbar__button-width, 5em);
+            background-color: var(--button__background, darkgrey);
+            font-size: var(--dpd__ok-cancel-toolbar__button-font-size, 14px);
+            color: var(--dpd__ok-cancel-toolbar__button-text-color, #fff);
+            border-radius: var(--dpd__ok-cancel-toolbar__button-border-radius, 0.25rem);
+
+            &:focus {
+                outline: 2px solid var(--focus-outline-color, #0D47A1);
+                outline-offset: 2px;
+            }
+
+            &:hover {
+                border-color: var(--dpd__ok-cancel-toolbar__button--hover-border-color, black);
+            }
+        }
+    }
+
+    .fa-calendar-alt {
+        color: hsl(216deg 89% 51%);
+    }
+
+    .table.dates {
+        padding: var(--date-grid-padding, 4px);
+        border: var(--date-grid-border, none);
+        border-collapse: separate;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-template-rows: min-content repeat(6, 1fr);
+        gap: 0.1875rem;
+        display: none;
+
+        .table__head {
+            display: grid;
+            grid-template-columns: subgrid;
+            grid-column: 1 / -1;
+            grid-row: 1;
+        }
+
+        .table__body {
+            display: grid;
+            grid-template-columns: subgrid;
+            gap: 0.25rem;
+            grid-column: 1 / -1;
+            grid-row: 2 / -1;
+            font-family: serif;
+
+            .focus-indicator {
+            // z-index: 1;
+                position: absolute;
+                background-color: #0D47A1;
+
+                height: calc(var(--anchor-height));
+                width: calc(var(--anchor-width));
+                top: var(--pos-top);
+                left: var(--pos-left);
+
+                border-radius: 0.25rem;
+                transition: 0.35s all ease;
+                --pos-top: calc(anchor(var(--for) top));
+                --pos-left: calc(anchor(var(--for) left));
+                --anchor-width: calc(anchor-size(var(--for) width));
+                --anchor-height: calc(anchor-size(var(--for) height));
+            }
+        }
+
+        .table__head__cell, .grid-cell {
+            text-align: center;
+        }
+
+        .table__head__cell {
+            background-color: var(--dpd__grid-header-item-bg-color, #fff);
+            font-size: 0.75em;
+            color: var(--dpd__grid-header-item-text-color, black);
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+
+        .grid-cell {
+            position: relative;
+            color: var(--dpd__day-item-text-color, black);
+            font-family: var(--dpd__day-item-font-family, 'Source Sans 3'), sans-serif;
+            padding: var(--dpd__day-item-padding, 0.25em);
+            border-radius: var(--dpd__day-item-border-radius, 0.3125em);
+            background-color: var(--dpd__day-item-bg-color--default, hsl(205deg 97% 81% / 30%));
+            border-style: var(--dpd__day-item-border-style, solid);
+            border-width: var(--dpd__day-item-border-width, 1px);
+            border-color: var(--dpd__day-item-border-color, transparent);
+            font-weight: var(--dpd__day-item-font-weight, 700);
+            font-size: var(--dpd__day-item-font-size, 0.9375em);
+            transition: all 0.35s ease;
+
+            &[style*="--is:"] {
+                anchor-name: var(--is);
+            }
+
+            &.disabled {
+                border-color: transparent;
+            }
+
+
+            &:focus,
+            &:hover {
+                background-color: var(--dpd__day-item-background-color--hover, hsl(207deg 90% 77% / 50%));
+                outline-offset: 0.0625rem;
+                color: var(--dpd__day-item-text-color--hover, black);
+            }
+
+            /*&:not(.disabled):hover {*/
+            /*    border-color: var(--dpd__day-item-border-color--hover, rgb(100 100 100));*/
+            /*}*/
+
+            &[aria-selected] {
+                background-color: var(--dpd__day-item-bg-color--aria-selected, var(--color--blue-300));
+                border-color: var(--dpd__day-item-border-color--aria-selected, rgb(100 100 100));
+                border-style: var(--dpd__day-item-border-style--aria-selected, dotted);
+
+                &:focus {
+                    outline: 0.125rem solid var(--dpd__day-item__border-color);
+                    outline-offset: 0.125rem;
+                }
+
+                &[style*="--is:"] {
+                    anchor-name: var(--is);
+                }
+            }
+
+            &[tabindex="0"] {
+            // background-color: var(--dpd__day-item-bg-color--focusable, #1976D2);
+                color: var(--dpd__day-item-text-color--focusable, #fff);
+
+            }
+            
+        }
+        &.current-month-grid{
+              display: grid;
+            }
+    }
+
+    .dialog-message {
+        padding-block: 0.5rem;
+        background-color: var(--dpd__message-bg-color, #0D47A1);
+        color: var(--dpd__message-text-color, white);
+        text-align: center;
+        font-size: var(--dpd__message-font-size, 0.75em);
+    }
+
+    &::backdrop {
+        background-color: var(--dpd__backdrop-background-color, hsla(0deg 0% 10% / 50%));
+        /*opacity: var(--dpd__backdrop-opacity, 0.5);*/
+    }
+}
+
+
+@supports (position-try-fallbacks: bottom) {
+    .datepicker-dialog {
+        position: fixed;
+        position-anchor: --trigger-btn;
+        position-area: top left;
+        position-try-fallbacks: bottom right, bottom left, top left, flip-inline;
+        /*position-try: bottom right, bottom left, top left, flip-inline;*/
+        /*position-try:*/
+        /*        flip-block,*/
+        /*        flip-inline,*/
+        /*        flip-block flip-inline;*/
+        /*position-try-fallbacks:*/
+        /*        flip-block,*/
+        /*        flip-inline,*/
+        /*        flip-block flip-inline;*/
+        /*position-try:*/
+        /*        top, top right, right,*/
+        /*        bottom right, bottom,*/
+        /*        bottom left, left;*/
+        /*position-try-fallbacks:*/
+        /*        top, top right, right,*/
+        /*        bottom right, bottom,*/
+        /*        bottom left, left;*/
+    }
+}
+
+/*position-try-fallbacks: --custom-left,*/
+/*--custom-bottom,*/
+/*--custom-right,*/
+/*--custom-bottom-right;*/
+
+/*@position-try --bottom {*/
+/*  top: anchor(bottom);*/
+/*  // left: anchor(left);*/
+/*  //bottom: unset;*/
+/*  justify-self: anchor-center;*/
+/*}*/
+
+/*@position-try --custom-left {*/
+/*  position-area: left;*/
+/*  width: 100px;*/
+/*  margin: 0 10px 0 0;*/
+/*}*/
+
+/*@position-try --custom-bottom {*/
+/*  top: anchor(bottom);*/
+/*  justify-self: anchor-center;*/
+/*  margin: 10px 0 0 0;*/
+/*  position-area: none;*/
+/*}*/
+
+/*@position-try --custom-right {*/
+/*  left: calc(anchor(right) + 10px);*/
+/*  align-self: anchor-center;*/
+/*  width: 100px;*/
+/*  position-area: none;*/
+/*}*/
+
+/*@position-try --custom-bottom-right {*/
+/*  position-area: bottom right;*/
+/*  margin: 10px 0 0 10px;*/
+/*}*/
