@@ -13,9 +13,10 @@ class DatepickerDialog extends HTMLElement {
     this.init();
   }
 
-  init() {
+  async init() {
     // this.attachShadow({mode: 'open'});
-    this.gettemplate().then(()=>{
+    const templ = await this.gettemplate("./node_modules/datepicker-web-component/dist/template.html");
+    
       console.log("getTemplate.then");
       const dlogTemplate = document.getElementById('datepicker-template');
     this.appendChild(dlogTemplate.content.cloneNode(true));
@@ -52,9 +53,9 @@ class DatepickerDialog extends HTMLElement {
 
        this.theadNode.innerHTML = '';
 
-    this.createMonthGrid();
 
-    });
+
+    // });
     this.buttonLabelChoose = 'Choose Date';
     this.buttonLabelChange = 'Change Date';
     this.dayLabels = [];
@@ -91,7 +92,7 @@ class DatepickerDialog extends HTMLElement {
 
     this.isMouseDownOnBackground = false;
 
-
+    this.createMonthGrid();
  
   }
 
@@ -161,19 +162,20 @@ class DatepickerDialog extends HTMLElement {
     return this._targetElement;
   }
 
-  async gettemplate() {
+  async gettemplate(url) {
     console.log("getTemplate");
-   return fetch("./node_modules/datepicker-web-component/dist/template.html").then((tmplt) => {
-      tmplt.text().then((tmplHtml) => {
+   const templ = await fetch();
+   const templateText = await  templ.text();
+  
         const parser = new DOMParser();
-        const doc = parser.parseFromString(tmplHtml, 'text/html');
+        const doc = parser.parseFromString(templateText, 'text/html');
         const template = doc.querySelector("template");
-        document.body.appendChild(template);
+   
         console.log("fetch callbacks");
-      })
-    });
-
-    console.log(document.getElementById("datepicker-template"));
+      
+    
+     return template;
+   
   }
 
 
