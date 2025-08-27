@@ -929,11 +929,11 @@ class DatepickerDialog extends HTMLElement {
 
 export { DatepickerDialog };
 
-customElements.define('dlog-datepicker', DatepickerDialog);
+// customElements.define('dlog-datepicker', DatepickerDialog);
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log("dlog-datepicker check");
-
+customElements.define('dlog-datepicker', DatepickerDialog);
   // fetch('https://codepen.io/ferricx/pen/yyYgrXz.html')
   //   .then(response => {
   //     if (!response.ok) {
