@@ -20,7 +20,7 @@ class DatepickerDialog extends HTMLElement {
               const parser = new DOMParser();
         const doc = parser.parseFromString(templateText, 'text/html');
         const template = doc.querySelector("template");
-   
+        document.body.appendChild(template);
         console.log("fetch callbacks");
          const dlogTemplate = document.getElementById('datepicker-template');
         this.appendChild(dlogTemplate.content.cloneNode(true));
