@@ -15,11 +15,18 @@ class DatepickerDialog extends HTMLElement {
 
   async init() {
     // this.attachShadow({mode: 'open'});
-    const templ = await this.gettemplate("./node_modules/datepicker-web-component/dist/template.html");
+    this.gettemplate("./node_modules/datepicker-web-component/dist/template.html").then(templateText =>{
+      console.log(templateText);
+              const parser = new DOMParser();
+        const doc = parser.parseFromString(templateText, 'text/html');
+        const template = doc.querySelector("template");
+   
+        console.log("fetch callbacks");
+         const dlogTemplate = document.getElementById('datepicker-template');
+        this.appendChild(dlogTemplate.content.cloneNode(true));
     
-      console.log("getTemplate.then");
-      const dlogTemplate = document.getElementById('datepicker-template');
-    this.appendChild(dlogTemplate.content.cloneNode(true));
+    
+
 
     console.log("set the nodes");
     this.inputLabelNode = this.querySelector("label");
@@ -55,7 +62,7 @@ class DatepickerDialog extends HTMLElement {
 
 
 
-    // });
+    });
     this.buttonLabelChoose = 'Choose Date';
     this.buttonLabelChange = 'Change Date';
     this.dayLabels = [];
@@ -166,15 +173,8 @@ class DatepickerDialog extends HTMLElement {
     console.log("getTemplate");
    const templ = await fetch(url);
    const templateText = await  templ.text();
-  
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(templateText, 'text/html');
-        const template = doc.querySelector("template");
-   
-        console.log("fetch callbacks");
-      
-    
-     return template;
+  return templateText;
+
    
   }
 
