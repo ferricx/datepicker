@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: path.resolve(__dirname, 'src/controller/dp-controller.js'),
+  entry: './src/dp-controller.js',
   output: {
     filename: 'datepicker-web-component.bundle.js', 
     path: path.resolve(__dirname, 'dist'),
@@ -28,8 +28,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/template/dp-template.html',
-      filename: 'index.html'
+      template: './src/index.html',
+      filename: 'index.html',
+      inject: 'body'
     }),
   ],
   // ... if using MiniCssExtractPlugin, add it to plugins array
