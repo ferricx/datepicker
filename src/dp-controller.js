@@ -60,9 +60,6 @@ class DatepickerDialog extends HTMLElement {
 
        this.theadNode.innerHTML = '';
 
-
-
-    });
     this.buttonLabelChoose = 'Choose Date';
     this.buttonLabelChange = 'Change Date';
     this.dayLabels = [];
@@ -100,6 +97,7 @@ class DatepickerDialog extends HTMLElement {
     this.isMouseDownOnBackground = false;
 
     this.createMonthGrid();
+  });
  
   }
 
