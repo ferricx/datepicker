@@ -156,6 +156,7 @@ class DatepickerDialog extends HTMLElement {
   }
 
   async gettemplate() {
+    console.log("getTemplate");
     const tmplt = await fetch("./index.html");
     const tmplHtml = await tmplt.text();
     const parser = new DOMParser();
