@@ -27,11 +27,11 @@ module.exports = {
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/index.html',
-      filename: 'index.html',
-      inject: 'body'
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: './src/index.html',
+    //   filename: 'index.html',
+    //   inject: 'body'
+    // }),
   ],
   // ... if using MiniCssExtractPlugin, add it to plugins array
 };
